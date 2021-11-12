@@ -1,2 +1,7 @@
 # Download all the needed python packages
 
+
+grpcio
+grpcio-tools
+paho-mqtt
+psutil
