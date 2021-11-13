@@ -1,19 +1,29 @@
 syntax = "proto3";
 import "google/protobuf/struct.proto";
+
 // The greeting service definition.
 service Greeter {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
-  // Sends another greeting
-  rpc SayHelloAgain (HelloRequest) returns (HelloReply) {}
+  // Initial Connection
+  rpc InitiateConnection (requestMessage) returns (replyMessage) {}
+  rpc ServerFunction (requestMessage) returns (replyMessage) {}
+
+  // Sending Data
+  rpc serverSend (requestMessage) returns (data) {}
+  rpc clientSend (data) returns (replyMessage) {}
 }
 
-// The request message containing the user's name.
-message HelloRequest {
-    string name = 1;
+// Request Message format
+message requestMessage {
+  string name = 1;
 }
 
-// The response message containing the greetings
-message HelloReply {
-    string message = 1;
+// Response Message format
+message replyMessage {
+  string message = 1;
+}
+
+// Data message
+message data{
+  string title = 1;
+  string payload = 2;
 }

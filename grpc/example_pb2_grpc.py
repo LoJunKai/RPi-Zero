@@ -15,15 +15,25 @@ class GreeterStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SayHello = channel.unary_unary(
-                '/Greeter/SayHello',
-                request_serializer=example__pb2.HelloRequest.SerializeToString,
-                response_deserializer=example__pb2.HelloReply.FromString,
+        self.InitiateConnection = channel.unary_unary(
+                '/Greeter/InitiateConnection',
+                request_serializer=example__pb2.requestMessage.SerializeToString,
+                response_deserializer=example__pb2.replyMessage.FromString,
                 )
-        self.SayHelloAgain = channel.unary_unary(
-                '/Greeter/SayHelloAgain',
-                request_serializer=example__pb2.HelloRequest.SerializeToString,
-                response_deserializer=example__pb2.HelloReply.FromString,
+        self.ServerFunction = channel.unary_unary(
+                '/Greeter/ServerFunction',
+                request_serializer=example__pb2.requestMessage.SerializeToString,
+                response_deserializer=example__pb2.replyMessage.FromString,
+                )
+        self.serverSend = channel.unary_unary(
+                '/Greeter/serverSend',
+                request_serializer=example__pb2.requestMessage.SerializeToString,
+                response_deserializer=example__pb2.data.FromString,
+                )
+        self.clientSend = channel.unary_unary(
+                '/Greeter/clientSend',
+                request_serializer=example__pb2.data.SerializeToString,
+                response_deserializer=example__pb2.replyMessage.FromString,
                 )
 
 
@@ -31,16 +41,28 @@ class GreeterServicer(object):
     """The greeting service definition.
     """
 
-    def SayHello(self, request, context):
-        """Sends a greeting
+    def InitiateConnection(self, request, context):
+        """Initial Connection
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SayHelloAgain(self, request, context):
-        """Sends another greeting
+    def ServerFunction(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def serverSend(self, request, context):
+        """Sending Data
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def clientSend(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -48,15 +70,25 @@ class GreeterServicer(object):
 
 def add_GreeterServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SayHello': grpc.unary_unary_rpc_method_handler(
-                    servicer.SayHello,
-                    request_deserializer=example__pb2.HelloRequest.FromString,
-                    response_serializer=example__pb2.HelloReply.SerializeToString,
+            'InitiateConnection': grpc.unary_unary_rpc_method_handler(
+                    servicer.InitiateConnection,
+                    request_deserializer=example__pb2.requestMessage.FromString,
+                    response_serializer=example__pb2.replyMessage.SerializeToString,
             ),
-            'SayHelloAgain': grpc.unary_unary_rpc_method_handler(
-                    servicer.SayHelloAgain,
-                    request_deserializer=example__pb2.HelloRequest.FromString,
-                    response_serializer=example__pb2.HelloReply.SerializeToString,
+            'ServerFunction': grpc.unary_unary_rpc_method_handler(
+                    servicer.ServerFunction,
+                    request_deserializer=example__pb2.requestMessage.FromString,
+                    response_serializer=example__pb2.replyMessage.SerializeToString,
+            ),
+            'serverSend': grpc.unary_unary_rpc_method_handler(
+                    servicer.serverSend,
+                    request_deserializer=example__pb2.requestMessage.FromString,
+                    response_serializer=example__pb2.data.SerializeToString,
+            ),
+            'clientSend': grpc.unary_unary_rpc_method_handler(
+                    servicer.clientSend,
+                    request_deserializer=example__pb2.data.FromString,
+                    response_serializer=example__pb2.replyMessage.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -70,7 +102,7 @@ class Greeter(object):
     """
 
     @staticmethod
-    def SayHello(request,
+    def InitiateConnection(request,
             target,
             options=(),
             channel_credentials=None,
@@ -80,14 +112,14 @@ class Greeter(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Greeter/SayHello',
-            example__pb2.HelloRequest.SerializeToString,
-            example__pb2.HelloReply.FromString,
+        return grpc.experimental.unary_unary(request, target, '/Greeter/InitiateConnection',
+            example__pb2.requestMessage.SerializeToString,
+            example__pb2.replyMessage.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def SayHelloAgain(request,
+    def ServerFunction(request,
             target,
             options=(),
             channel_credentials=None,
@@ -97,8 +129,42 @@ class Greeter(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Greeter/SayHelloAgain',
-            example__pb2.HelloRequest.SerializeToString,
-            example__pb2.HelloReply.FromString,
+        return grpc.experimental.unary_unary(request, target, '/Greeter/ServerFunction',
+            example__pb2.requestMessage.SerializeToString,
+            example__pb2.replyMessage.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def serverSend(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Greeter/serverSend',
+            example__pb2.requestMessage.SerializeToString,
+            example__pb2.data.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def clientSend(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Greeter/clientSend',
+            example__pb2.data.SerializeToString,
+            example__pb2.replyMessage.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
