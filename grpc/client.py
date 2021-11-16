@@ -10,6 +10,10 @@ import json
 
 import argparse
 
+import util
+
+p = util.Profiler()
+
 parser = argparse.ArgumentParser(description='Client process for gRPC')
 parser.add_argument('--name', metavar='n', type=str,
                     help='name of client')
@@ -33,12 +37,17 @@ def run():
         data = json.load(f)
         count = 0
 
+        # t = Thread(target=thread_log, args=(os.getpid(),))
+        # t.start()
+        p.start_log()
         while count < int(args.times):
             reply = stub.SendPayload(example_pb2.data(payload=json.dumps(data), title="{}_{}".format(count,args.name)))
             count += 1
             print("{}: {}".format(reply.message, count))
 
         print("Finished sending {} packets".format(args.times))
+        # t.do_run = False
+        p.end_log()
 
 if __name__ == '__main__':
     logging.basicConfig()
