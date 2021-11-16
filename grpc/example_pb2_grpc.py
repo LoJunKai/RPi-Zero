@@ -25,13 +25,8 @@ class GreeterStub(object):
                 request_serializer=example__pb2.requestMessage.SerializeToString,
                 response_deserializer=example__pb2.replyMessage.FromString,
                 )
-        self.serverSend = channel.unary_unary(
-                '/Greeter/serverSend',
-                request_serializer=example__pb2.requestMessage.SerializeToString,
-                response_deserializer=example__pb2.data.FromString,
-                )
-        self.clientSend = channel.unary_unary(
-                '/Greeter/clientSend',
+        self.SendPayload = channel.unary_unary(
+                '/Greeter/SendPayload',
                 request_serializer=example__pb2.data.SerializeToString,
                 response_deserializer=example__pb2.replyMessage.FromString,
                 )
@@ -54,15 +49,9 @@ class GreeterServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def serverSend(self, request, context):
+    def SendPayload(self, request, context):
         """Sending Data
         """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def clientSend(self, request, context):
-        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -80,13 +69,8 @@ def add_GreeterServicer_to_server(servicer, server):
                     request_deserializer=example__pb2.requestMessage.FromString,
                     response_serializer=example__pb2.replyMessage.SerializeToString,
             ),
-            'serverSend': grpc.unary_unary_rpc_method_handler(
-                    servicer.serverSend,
-                    request_deserializer=example__pb2.requestMessage.FromString,
-                    response_serializer=example__pb2.data.SerializeToString,
-            ),
-            'clientSend': grpc.unary_unary_rpc_method_handler(
-                    servicer.clientSend,
+            'SendPayload': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendPayload,
                     request_deserializer=example__pb2.data.FromString,
                     response_serializer=example__pb2.replyMessage.SerializeToString,
             ),
@@ -136,7 +120,7 @@ class Greeter(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def serverSend(request,
+    def SendPayload(request,
             target,
             options=(),
             channel_credentials=None,
@@ -146,24 +130,7 @@ class Greeter(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Greeter/serverSend',
-            example__pb2.requestMessage.SerializeToString,
-            example__pb2.data.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def clientSend(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Greeter/clientSend',
+        return grpc.experimental.unary_unary(request, target, '/Greeter/SendPayload',
             example__pb2.data.SerializeToString,
             example__pb2.replyMessage.FromString,
             options, channel_credentials,

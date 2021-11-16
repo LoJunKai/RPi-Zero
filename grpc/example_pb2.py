@@ -11,7 +11,6 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from google.protobuf import struct_pb2 as google_dot_protobuf_dot_struct__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -20,9 +19,8 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\rexample.proto\x1a\x1cgoogle/protobuf/struct.proto\"\x1e\n\x0erequestMessage\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1f\n\x0creplyMessage\x12\x0f\n\x07message\x18\x01 \x01(\t\"&\n\x04\x64\x61ta\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\t2\xc3\x01\n\x07Greeter\x12\x36\n\x12InitiateConnection\x12\x0f.requestMessage\x1a\r.replyMessage\"\x00\x12\x32\n\x0eServerFunction\x12\x0f.requestMessage\x1a\r.replyMessage\"\x00\x12&\n\nserverSend\x12\x0f.requestMessage\x1a\x05.data\"\x00\x12$\n\nclientSend\x12\x05.data\x1a\r.replyMessage\"\x00\x62\x06proto3'
-  ,
-  dependencies=[google_dot_protobuf_dot_struct__pb2.DESCRIPTOR,])
+  serialized_pb=b'\n\rexample.proto\"\x1e\n\x0erequestMessage\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1f\n\x0creplyMessage\x12\x0f\n\x07message\x18\x01 \x01(\t\"&\n\x04\x64\x61ta\x12\r\n\x05title\x18\x01 \x01(\t\x12\x0f\n\x07payload\x18\x02 \x01(\t2\x9c\x01\n\x07Greeter\x12\x36\n\x12InitiateConnection\x12\x0f.requestMessage\x1a\r.replyMessage\"\x00\x12\x32\n\x0eServerFunction\x12\x0f.requestMessage\x1a\r.replyMessage\"\x00\x12%\n\x0bSendPayload\x12\x05.data\x1a\r.replyMessage\"\x00\x62\x06proto3'
+)
 
 
 
@@ -54,8 +52,8 @@ _REQUESTMESSAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=47,
-  serialized_end=77,
+  serialized_start=17,
+  serialized_end=47,
 )
 
 
@@ -86,8 +84,8 @@ _REPLYMESSAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=79,
-  serialized_end=110,
+  serialized_start=49,
+  serialized_end=80,
 )
 
 
@@ -125,8 +123,8 @@ _DATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=112,
-  serialized_end=150,
+  serialized_start=82,
+  serialized_end=120,
 )
 
 DESCRIPTOR.message_types_by_name['requestMessage'] = _REQUESTMESSAGE
@@ -164,8 +162,8 @@ _GREETER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=153,
-  serialized_end=348,
+  serialized_start=123,
+  serialized_end=279,
   methods=[
   _descriptor.MethodDescriptor(
     name='InitiateConnection',
@@ -188,19 +186,9 @@ _GREETER = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
-    name='serverSend',
-    full_name='Greeter.serverSend',
+    name='SendPayload',
+    full_name='Greeter.SendPayload',
     index=2,
-    containing_service=None,
-    input_type=_REQUESTMESSAGE,
-    output_type=_DATA,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='clientSend',
-    full_name='Greeter.clientSend',
-    index=3,
     containing_service=None,
     input_type=_DATA,
     output_type=_REPLYMESSAGE,

@@ -41,13 +41,13 @@ After installing all the requirements (I recommend creating virtual environment 
 2. After the code is generated, you can run:
 
     ```bash
-    python client.py
+    python client.py --name client --times 10
     ```
 
 3. Do the same for the server (your computer) then run:
 
     ```bash
-    python server.py
+    python server.py --name server
     ```
 
 You will get the below output from the server and client commad line:  
