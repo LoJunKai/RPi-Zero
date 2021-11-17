@@ -14,14 +14,14 @@ client = subscriber.Client("sub1")
 client.on_message = on_message
 
 print(f"Connecting to {MQTT_BROKER_IP}")
-client.connect(MQTT_BROKER_IP)
+client.connect("localhost")
 
 #loop start
-client.loop_start()
+client.loop_forever()
 
 print(f"Subscribing to {TEST_TOPIC1}")
 client.subscribe(TEST_TOPIC1)
 
-time.sleep(10)
+# time.sleep(10)
 
-client.loop_stop()
+# client.loop_stop()
