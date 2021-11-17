@@ -9,38 +9,6 @@ import psutil
 import config
 
 
-# from threading import Thread
-# import threading
-# import logging
-# from datetime import datetime
-# from pathlib import Path
-# from time import sleep
-# import psutil
-
-# log_filename = datetime.now().strftime('%Y-%m-%d %H-%M-%S') + ".txt"
-# log_fp = Path('./', log_filename)
-
-# logging.basicConfig(filename=log_fp, level=logging.DEBUG,
-#                     format="%(asctime)s - %(message)s")
-
-# logging.debug('starting')
-
-# def thread_log(processPid):
-#     t = threading.currentThread()
-#     p = psutil.Process(processPid)
-#     list_cpu = []
-#     list_mem = []
-#     while getattr(t, "do_run", True):
-#         cpu = p.cpu_percent(interval=0.1)/psutil.cpu_count()
-#         mem = p.memory_percent()
-#         if cpu != 0:
-#             list_cpu.append(cpu)
-#             list_mem.append(mem)
-#             text = f'cpu: {cpu}, mem: {mem}'
-#             logging.debug(text)
-#         # sleep(0.001)
-#     logging.debug(f'avg cpu: {sum(list_cpu)/len(list_cpu)}, ave mem: {sum(list_mem)/len(list_mem)}')
-
 def GetCpuUsage():
     return psutil.cpu_percent()
 
@@ -70,7 +38,7 @@ class Profiler:
         log_fp = Path(config.LOG_PATH, log_filename)
 
         logging.basicConfig(filename=log_fp, level=logging.DEBUG,
-                            format="%(asctime)s - ")
+                            format="%(asctime)s - %(message)s")
 
         logging.debug('starting')
 

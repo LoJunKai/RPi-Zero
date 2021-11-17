@@ -1,5 +1,4 @@
 syntax = "proto3";
-import "google/protobuf/struct.proto";
 
 // The greeting service definition.
 service Greeter {
@@ -8,8 +7,7 @@ service Greeter {
   rpc ServerFunction (requestMessage) returns (replyMessage) {}
 
   // Sending Data
-  rpc serverSend (requestMessage) returns (data) {}
-  rpc clientSend (data) returns (replyMessage) {}
+  rpc SendPayload (data) returns (replyMessage) {}
 }
 
 // Request Message format
