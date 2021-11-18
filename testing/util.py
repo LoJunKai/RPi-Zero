@@ -1,6 +1,7 @@
 import logging
 import os
 import threading
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -9,44 +10,12 @@ import psutil
 import config
 
 
-# from threading import Thread
-# import threading
-# import logging
-# from datetime import datetime
-# from pathlib import Path
-# from time import sleep
-# import psutil
-
-# log_filename = datetime.now().strftime('%Y-%m-%d %H-%M-%S') + ".txt"
-# log_fp = Path('./', log_filename)
-
-# logging.basicConfig(filename=log_fp, level=logging.DEBUG,
-#                     format="%(asctime)s - %(message)s")
-
-# logging.debug('starting')
-
-# def thread_log(processPid):
-#     t = threading.currentThread()
-#     p = psutil.Process(processPid)
-#     list_cpu = []
-#     list_mem = []
-#     while getattr(t, "do_run", True):
-#         cpu = p.cpu_percent(interval=0.1)/psutil.cpu_count()
-#         mem = p.memory_percent()
-#         if cpu != 0:
-#             list_cpu.append(cpu)
-#             list_mem.append(mem)
-#             text = f'cpu: {cpu}, mem: {mem}'
-#             logging.debug(text)
-#         # sleep(0.001)
-#     logging.debug(f'avg cpu: {sum(list_cpu)/len(list_cpu)}, ave mem: {sum(list_mem)/len(list_mem)}')
-
-def GetCpuUsage():
-    return psutil.cpu_percent()
+def GetCpuUsage(p: psutil.Process):
+    return p.cpu_percent(interval=0.1)/psutil.cpu_count()
 
 
-def GetMemUsage():
-    return psutil.virtual_memory()
+def GetMemUsage(p: psutil.Process):
+    return p.memory_percent()
 
 
 def GetNetworkUsage(addr):
@@ -58,52 +27,54 @@ def GetNetworkUsage(addr):
 
 
 class Profiler:
+    ''' 
+    Profiles the code by:
+        1: Creating a new process to run all the logging functions
+        2: Spawn multiple threads, with each thread logging a specific quantity
+        3: Log statements are written into a file
+
+    When running, if you want to exit from `ctrl + c`, 
+    do remember to wrap this function within a `try-catch` statement
+    ```Eg:
+    Try:
+        a = Profiler()
+        a.start_log()
+    catch KeyboardInterrupt:
+        a.end_log()
+    ```
+
+    To change the quantities being logged, update the LOG_FN_LIST below.
+    Currently this class will pass in the `psutil.process` as an argument
+    '''
 
     # Place all your logging functions here:
-    LOG_FN_LIST = [GetCpuUsage, GetMemUsage, GetNetworkUsage]
+    # LOG_FN_LIST = [GetCpuUsage, GetMemUsage, GetNetworkUsage]  # GetNetworkUsage - still todo
+    LOG_FN_LIST = [GetCpuUsage, GetMemUsage]
 
     def __init__(self):
         self.pid = os.getpid()
         self.process = psutil.Process(self.pid)
 
-        log_filename = datetime.now().strftime('%Y-%m-%d %H-%M-%S') + ".txt"
+        log_filename = datetime.now().strftime('%Y-%m-%d %H-%M-%S') + ".csv"
         log_fp = Path(config.LOG_PATH, log_filename)
 
-        logging.basicConfig(filename=log_fp, level=logging.DEBUG,
-                            format="%(asctime)s - ")
+        logging.basicConfig(filename=log_fp, level=logging.INFO,  # Can change to debug to reveal debug statements
+                            format="%(asctime)s%(msecs)03d %(message)s", datefmt="%H:%M:%S")
 
         logging.debug('starting')
 
         # TODO: Pass object to another process
 
-    def _log_wrapper(self, func):
+    def _log_wrapper(self, func, *args, **kwargs):
         def wrap(*args, **kwargs):
             output = f"{func(*args, **kwargs)}"
-            logging.debug(output)
-            print(output)
-            a = self._create_thread(wrap, args, kwargs).start()
-            return a
-        return wrap
+            logging.info(f"{func.__name__} {output}")
+            logging.debug(func.__name__, output)
+
+        return self._create_thread(wrap, *args, **kwargs)
 
     def _create_thread(self, func, *args, **kwargs):
-        # threading.Timer(config.LOG_INTERVAL, log_wrapper, (log_fn,))
-        # print(args)
-        # if args == tuple():
-        #     return periodicrun.periodicrun(config.LOG_INTERVAL, func)
-        # else:
-        #     return periodicrun.periodicrun(config.LOG_INTERVAL, func, args=args)
-
-        # if args == tuple() and kwargs == {}:
-        #     return threading.Timer(config.LOG_INTERVAL, func)
-        # elif args == tuple():
-        #     return threading.Timer(config.LOG_INTERVAL, func, kwargs)
-        # elif kwargs == {}:
-        #     return threading.Timer(config.LOG_INTERVAL, func, args)
-        # else:
-        return threading.Timer(config.LOG_INTERVAL, func, *args, **kwargs)
-        # threading.Timer(config.LOG_INTERVAL, self._create_thread, (func, *args), **kwargs).start()
-
-        return
+        return SetInterval(config.LOG_INTERVAL, func, *args, **kwargs)
 
     def start_log(self):
         ''' Start all the required logging in separate functions 
@@ -111,11 +82,8 @@ class Profiler:
         '''
         self.threads = []
 
-        # log_wrapper = lambda x, *args, **kw: logging.debug(f"{x(*args, **kw)}")
-
         for log_fn in self.LOG_FN_LIST:
-            # self.threads.append(self._log_wrapper(log_fn))
-            self.threads.append(self._create_thread(self._log_wrapper(log_fn)))
+            self.threads.append(self._log_wrapper(log_fn, self.process))
 
         for thr in self.threads:
             thr.start()
@@ -125,3 +93,38 @@ class Profiler:
 
         for thr in self.threads:
             thr.cancel()
+
+
+class SetInterval:
+    # Class copied from https://stackoverflow.com/questions/2697039/python-equivalent-of-setinterval/48709380#48709380
+    def __init__(self, interval, action, *args):
+        self.interval = interval
+        self.action = action
+        self.args = args
+        self.stopEvent = threading.Event()
+        self.thread = threading.Thread(target=self.__setInterval)
+
+    def __setInterval(self):
+        nextTime = time.time()+self.interval
+        while not self.stopEvent.wait(nextTime-time.time()):
+            nextTime += self.interval
+            self.action(*self.args)
+
+    def start(self):
+        self.thread.start()
+
+    def cancel(self):
+        self.stopEvent.set()
+
+
+if __name__ == "__main__":
+    try:
+        a = Profiler()
+        a.start_log()
+
+        i = 0
+        while i < 50:
+            time.sleep(0.1)
+            i += 1
+    finally:
+        a.end_log()
