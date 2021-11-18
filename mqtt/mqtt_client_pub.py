@@ -8,11 +8,11 @@ sys.path.insert(0, Path(__file__).parents[1])
 
 import paho.mqtt.publish as publish
 
-from config import *
+from testing.config import *
 
 print("testing 1... ", end="")
 
-with open(TEST_FILE2, "rb") as test1:
+with open(TEST_FILE1, "rb") as test1:
     # Read the docs here: https://github.com/eclipse/paho.mqtt.python
     publish.single(TEST_TOPIC1, test1.read(), hostname="localhost")
 

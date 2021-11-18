@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+// The greeting service definition.
+service Greeter {
+  // Initial Connection
+  rpc InitiateConnection (requestMessage) returns (replyMessage) {}
+  rpc ServerFunction (requestMessage) returns (replyMessage) {}
+
+  // Sending Data
+  rpc SendPayload (data) returns (replyMessage) {}
+}
+
+// Request Message format
+message requestMessage {
+  string name = 1;
+}
+
+// Response Message format
+message replyMessage {
+  string message = 1;
+}
+
+// Data message
+message data{
+  string title = 1;
+  string payload = 2;
+}
