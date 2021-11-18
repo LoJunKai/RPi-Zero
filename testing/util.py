@@ -4,9 +4,11 @@ import threading
 import time
 from datetime import datetime
 from pathlib import Path
+
 import psutil
 
 import testing.config as config
+
 
 def GetCpuUsage(p: psutil.Process):
     return p.cpu_percent(interval=0.1)/psutil.cpu_count()
@@ -37,7 +39,7 @@ def GetNetworkUsage(p: psutil.Process):
     else:
         current_out = net2_out - net1_out
 
-    network = {"traffic_in" : current_in, "traffic_out" : current_out}
+    network = {"traffic_in": current_in, "traffic_out": current_out}
     return network
 
 

@@ -1,20 +1,21 @@
+import argparse
+import json
+import logging
+from pathlib import Path
 from concurrent import futures
-import logging, os
 
-import grpc
 import example_pb2
 import example_pb2_grpc
-import json
-
-import argparse
+import grpc
 
 parser = argparse.ArgumentParser(description='Server process for gRPC')
-parser.add_argument('--name', metavar='n', type=str,
+parser.add_argument('-n', '--name', metavar='n', type=str, required=True,
                     help='name of server')
 
 args = parser.parse_args()
 
-jsonPath = "serverJson"
+jsonPath = Path(Path(__file__).parent, "serverJson")
+
 
 class Greeter(example_pb2_grpc.GreeterServicer):
 
@@ -22,11 +23,11 @@ class Greeter(example_pb2_grpc.GreeterServicer):
     def InitiateConnection(self, request, context):
         print(f'Incoming connection from {request.name}')
         return example_pb2.replyMessage(message='Connected to server: {}'.format(args.name))
-    
+
     # Data sent by client
     def SendPayload(self, request, context):
         data = json.loads(request.payload)
-        with open(os.path.join(jsonPath, "{}.json".format(request.title)), 'w') as f:
+        with open(Path(jsonPath, f"{request.title}.json"), 'w') as f:
             json.dump(data, f, indent=4)
         title = request.title
         title = title.split('_')
@@ -44,4 +45,5 @@ def serve():
 
 if __name__ == '__main__':
     logging.basicConfig()
+    Path(jsonPath).mkdir(exist_ok=True)
     serve()
