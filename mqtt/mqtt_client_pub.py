@@ -1,16 +1,12 @@
-# Add import path
-# import sys
-# from pathlib import Path
-# sys.path.insert(0, Path(__file__).parents[1])
-
 # MQTT Publish Demo
 # Publish two messages, to two different topics
 
 import paho.mqtt.publish as publish
 
-# from testing.config import *
+from util import Profiler
+from testing.config import *
 
-# p = Profiler()
+p = Profiler()
 
 print("starting MQTT... ", end="")
 
@@ -20,15 +16,16 @@ parser.add_argument('--times', metavar='t', type=int,
 
 args = parser.parse_args()
 
-with open(TEST_FILE1, "rb") as test1:
-    # Read the docs here: https://github.com/eclipse/paho.mqtt.python
-    count = 0
+test1 = open(TEST_FILE1, "rb").read()
 
-    # p.start_log()
-    while count < int(args.times):
-        publish.single(TEST_TOPIC1, test1.read(), hostname="localhost")
-        count += 1
-        print("{}: {}".format('Sent count: ', count))
-    # p.end_log()
+# Read the docs here: https://github.com/eclipse/paho.mqtt.python
+count = 0
+
+p.start_log()
+while count < int(args.times):
+    publish.single(TEST_TOPIC1, test1, hostname="localhost")
+    count += 1
+    print("{}: {}".format('Sent count: ', count))
+p.end_log()
 
 print("done")

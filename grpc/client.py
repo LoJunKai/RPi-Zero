@@ -1,9 +1,7 @@
 from __future__ import print_function
-import sys
-from pathlib import Path
-sys.path.insert(0, Path(__file__).parents[1])
 
-from testing.util import Profiler
+from util import Profiler
+from config import *
 
 import logging
 import os
