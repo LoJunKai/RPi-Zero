@@ -1,10 +1,17 @@
+# Add import path
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parents[1]))
+
 # MQTT Publish Demo
 # Publish two messages, to two different topics
 
 import paho.mqtt.publish as publish
 
-from util import Profiler
 from testing.config import *
+from testing.util import Profiler
+
+import argparse
 
 p = Profiler()
 

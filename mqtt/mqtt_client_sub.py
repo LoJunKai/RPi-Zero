@@ -1,9 +1,14 @@
+# Add import path
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parents[1]))
+
 import paho.mqtt.client as mqtt
 import time
 
 from paho.mqtt.publish import _on_connect
 
-from config import *
+from testing.config import *
 
 def on_connect(client, userdata, flags, rc):
     print(f"Subscribing to {TEST_TOPIC1}")

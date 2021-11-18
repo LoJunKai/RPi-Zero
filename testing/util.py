@@ -5,7 +5,8 @@ import time
 from datetime import datetime
 from pathlib import Path
 import psutil
-import config
+
+import testing.config as config
 
 def GetCpuUsage(p: psutil.Process):
     return p.cpu_percent(interval=0.1)/psutil.cpu_count()

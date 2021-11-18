@@ -1,7 +1,12 @@
 from __future__ import print_function
 
-from util import Profiler
-from config import *
+# Add import path
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parents[1]))
+
+from testing.util import Profiler
+from testing.config import *
 
 import logging
 import os
@@ -23,8 +28,6 @@ parser.add_argument('--times', metavar='t', type=int,
 
 args = parser.parse_args()
 
-jsonPath = "clientJson"
-
 def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
@@ -34,7 +37,7 @@ def run():
         response = stub.InitiateConnection(example_pb2.requestMessage(name=args.name))
         print(response.message)
 
-        f = open(os.path.join(jsonPath, "cMsg.json"))
+        f = open(TEST_FILE1)
         data = json.load(f)
         count = 0
 
