@@ -1,4 +1,9 @@
 from __future__ import print_function
+import sys
+from pathlib import Path
+sys.path.insert(0, Path(__file__).parents[1])
+
+from testing.util import Profiler
 
 import logging
 import os
@@ -10,9 +15,7 @@ import json
 
 import argparse
 
-import util
-
-p = util.Profiler()
+p = Profiler()
 
 parser = argparse.ArgumentParser(description='Client process for gRPC')
 parser.add_argument('--name', metavar='n', type=str,
@@ -44,6 +47,7 @@ def run():
             reply = stub.SendPayload(example_pb2.data(payload=json.dumps(data), title="{}_{}".format(count,args.name)))
             count += 1
             print("{}: {}".format(reply.message, count))
+            # print(f"{psutil.net_io_counters().bytes_sent}")
 
         print("Finished sending {} packets".format(args.times))
         # t.do_run = False

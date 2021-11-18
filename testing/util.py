@@ -4,11 +4,8 @@ import threading
 import time
 from datetime import datetime
 from pathlib import Path
-
 import psutil
-
 import config
-
 
 def GetCpuUsage(p: psutil.Process):
     return p.cpu_percent(interval=0.1)/psutil.cpu_count()
@@ -18,12 +15,29 @@ def GetMemUsage(p: psutil.Process):
     return p.memory_percent()
 
 
-def GetNetworkUsage(addr):
-    # TODO
-    # Get address and port of the MQTT or gRPC connection
-    # return amount of bytes sent and such
-    # placeholder return now
-    return psutil.net_io_counters()
+def GetNetworkUsage(p: psutil.Process):
+    net1_out = psutil.net_io_counters().bytes_sent
+    net1_in = psutil.net_io_counters().bytes_recv
+
+    time.sleep(0.01)
+
+    # Get new net in/out
+    net2_out = psutil.net_io_counters().bytes_sent
+    net2_in = psutil.net_io_counters().bytes_recv
+
+    # Compare and get current speed
+    if net1_in > net2_in:
+        current_in = 0
+    else:
+        current_in = net2_in - net1_in
+
+    if net1_out > net2_out:
+        current_out = 0
+    else:
+        current_out = net2_out - net1_out
+
+    network = {"traffic_in" : current_in, "traffic_out" : current_out}
+    return network
 
 
 class Profiler:
@@ -49,7 +63,7 @@ class Profiler:
 
     # Place all your logging functions here:
     # LOG_FN_LIST = [GetCpuUsage, GetMemUsage, GetNetworkUsage]  # GetNetworkUsage - still todo
-    LOG_FN_LIST = [GetCpuUsage, GetMemUsage]
+    LOG_FN_LIST = [GetCpuUsage, GetMemUsage, GetNetworkUsage]
 
     def __init__(self):
         self.pid = os.getpid()
