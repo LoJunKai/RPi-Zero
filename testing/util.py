@@ -76,7 +76,8 @@ class Profiler:
         log_fp = Path(config.LOG_PATH, log_filename)
 
         logging.basicConfig(filename=log_fp, level=logging.INFO,  # Can change to debug to reveal debug statements
-                            format="%(asctime)s%(msecs)03d %(message)s", datefmt="%H:%M:%S")
+                            format="%(asctime)s%(msecs)03d %(message)s", datefmt="%H:%M:%S",
+                            force=True)
 
         logging.debug('starting')
 
