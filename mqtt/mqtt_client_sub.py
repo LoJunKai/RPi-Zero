@@ -1,3 +1,8 @@
+'''
+start sub before pub
+python mqtt_client_sub.py
+'''
+
 import paho.mqtt.client as mqtt
 import time
 

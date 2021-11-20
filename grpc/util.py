@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 import psutil
 import config
+# import plot_metrics #TODO edit here
 
 def GetCpuUsage(p: psutil.Process):
     return p.cpu_percent(interval=0.1)/psutil.cpu_count()
@@ -36,8 +37,12 @@ def GetNetworkUsage(p: psutil.Process):
     else:
         current_out = net2_out - net1_out
 
-    network = {"traffic_in" : current_in, "traffic_out" : current_out}
-    return network
+    # network = {"traffic_in" : current_in, "traffic_out" : current_out}
+
+    if current_in == current_in:
+        network_traffic = current_in # or current_out, eitherway
+
+    return network_traffic
 
 
 class Profiler:
@@ -69,11 +74,11 @@ class Profiler:
         self.pid = os.getpid()
         self.process = psutil.Process(self.pid)
 
-        log_filename = datetime.now().strftime('%Y-%m-%d %H-%M-%S') + ".csv"
-        log_fp = Path(config.LOG_PATH, log_filename)
+        self.log_filename = datetime.now().strftime('%Y-%m-%d %H-%M-%S') + ".csv"
+        self.log_fp = Path(config.LOG_PATH, self.log_filename)
 
-        logging.basicConfig(filename=log_fp, level=logging.INFO,  # Can change to debug to reveal debug statements
-                            format="%(asctime)s%(msecs)03d %(message)s", datefmt="%H:%M:%S")
+        logging.basicConfig(filename=self.log_fp, level=logging.INFO,  # Can change to debug to reveal debug statements
+                            format="%(asctime)s%(msecs)03d,%(message)s", datefmt="%S")
 
         logging.debug('starting')
 
@@ -82,7 +87,7 @@ class Profiler:
     def _log_wrapper(self, func, *args, **kwargs):
         def wrap(*args, **kwargs):
             output = f"{func(*args, **kwargs)}"
-            logging.info(f"{func.__name__} {output}")
+            logging.info(f"{func.__name__},{output}")
             logging.debug(func.__name__, output)
 
         return self._create_thread(wrap, *args, **kwargs)
@@ -108,8 +113,14 @@ class Profiler:
         for thr in self.threads:
             thr.cancel()
 
+    # TODO > added here, need to link?
+    # def plot_logs(self):        
+    #     plot_metrics.reformat_log_csv(self.log_fp)
+    #     plot_metrics.plotAllMetricsGraph(self.log_fp)
+
 
 class SetInterval:
+    
     # Class copied from https://stackoverflow.com/questions/2697039/python-equivalent-of-setinterval/48709380#48709380
     def __init__(self, interval, action, *args):
         self.interval = interval
@@ -140,5 +151,8 @@ if __name__ == "__main__":
         while i < 50:
             time.sleep(0.1)
             i += 1
+
     finally:
         a.end_log()
+        # TODO > added here, need to link?
+        # a.plot_logs()
