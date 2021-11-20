@@ -3,8 +3,12 @@
 
 import paho.mqtt.publish as publish
 
+import argparse
 from util import Profiler
-from testing.config import *
+
+# from testing.config import *
+from config import *
+from util import *
 
 p = Profiler()
 
