@@ -1,3 +1,8 @@
+'''
+start sub before pub
+python mqtt_client_sub.py
+'''
+
 # Add import path
 import sys
 from pathlib import Path

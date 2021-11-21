@@ -12,6 +12,10 @@ import paho.mqtt.publish as publish
 from testing.config import *
 from testing.util import Profiler
 
+# from testing.config import *
+from config import *
+from util import *
+
 p = Profiler()
 
 print("starting MQTT... ", end="")

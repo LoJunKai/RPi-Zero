@@ -4,11 +4,8 @@ import threading
 import time
 from datetime import datetime
 from pathlib import Path
-
 import psutil
-
-import testing.config as config
-
+import config
 # import plot_metrics #TODO edit here
 
 def GetCpuUsage(p: psutil.Process):
@@ -77,12 +74,11 @@ class Profiler:
         self.pid = os.getpid()
         self.process = psutil.Process(self.pid)
 
-        log_filename = datetime.now().strftime('%Y-%m-%d %H-%M-%S') + ".csv"
-        self.log_fp = Path(config.LOG_PATH, log_filename)
+        self.log_filename = datetime.now().strftime('%Y-%m-%d %H-%M-%S') + ".csv"
+        self.log_fp = Path(config.LOG_PATH, self.log_filename)
 
         logging.basicConfig(filename=self.log_fp, level=logging.INFO,  # Can change to debug to reveal debug statements
-                            format="%(asctime)s%(msecs)03d,%(message)s", datefmt="%S",
-                            force=True)
+                            format="%(asctime)s%(msecs)03d,%(message)s", datefmt="%S")
 
         logging.debug('starting')
 
@@ -124,6 +120,7 @@ class Profiler:
 
 
 class SetInterval:
+    
     # Class copied from https://stackoverflow.com/questions/2697039/python-equivalent-of-setinterval/48709380#48709380
     def __init__(self, interval, action, *args):
         self.interval = interval
