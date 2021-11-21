@@ -42,7 +42,7 @@ def GetNetworkUsage(p: psutil.Process):
         current_out = net2_out - net1_out
 
     # network = {"traffic_in" : current_in, "traffic_out" : current_out}
-
+    network_traffic = 0
     if current_in == current_out:
         network_traffic = current_in # or current_out, eitherway
 
