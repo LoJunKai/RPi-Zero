@@ -39,7 +39,7 @@ def GetNetworkUsage(p: psutil.Process):
 
     # network = {"traffic_in" : current_in, "traffic_out" : current_out}
 
-    if current_in == current_in:
+    if current_in == current_out:
         network_traffic = current_in # or current_out, eitherway
 
     return network_traffic
