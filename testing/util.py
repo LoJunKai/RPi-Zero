@@ -85,12 +85,17 @@ class Profiler:
             logging is threaded and triggers the functions at precise intervals
         '''
         self.start_stop_event.set()
+        while self.start_stop_event.is_set():
+            # Too fast, busy wait for _profiler process init
+            # print("waiting")
+            time.sleep(0.01)
 
     def end_log(self):
         ''' Stop the logging threads '''
         print("Stopping logger... ", end="")
         while self.start_stop_event.is_set():
             # Too fast, logging process has not started yet
+            # print("stopping")
             time.sleep(0.01)
 
         self.start_stop_event.set()

@@ -66,6 +66,17 @@ This connects the port from the raspberry pi to the port in the server, to allow
 1. When compiling the proto file, you occur 'cannot import libatomic.so.1', follow this [source](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-on-the-Raspberry-Pi/issues/67):
 ![debug1](./images/debug1.jpg)
 
+2. When running the client on RPi, if you run into this error:
+
+    ``` bash
+    File "/home/pi/.local/lib/python3.9/site-packages/grpc/_compression.py", line 15, in <module>
+    from grpc._cython import cygrpc
+    ImportError: /home/pi/.local/lib/python3.9/site-packages/grpc/_cython/cygrpc.cpython-39-arm-linux-gnueabihf.so: undefined symbol: __atomic_exchange_8
+    ```
+
+    Just run the [following](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-on-the-Raspberry-Pi/issues/67): 
+    `export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1.2.0`
+
 ## MQTT
 
 ### Setup
