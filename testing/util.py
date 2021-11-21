@@ -3,6 +3,7 @@ import os
 import threading
 import time
 from datetime import datetime
+from multiprocessing import Event, Process
 from pathlib import Path
 
 import psutil
@@ -48,6 +49,10 @@ def GetNetworkUsage(p: psutil.Process):
     return network_traffic
 
 
+# Place all your logging functions here:
+LOG_FN_LIST = [GetCpuUsage, GetMemUsage, GetNetworkUsage]
+
+
 class Profiler:
     ''' 
     Profiles the code by:
@@ -69,13 +74,51 @@ class Profiler:
     Currently this class will pass in the `psutil.process` as an argument
     '''
 
-    # Place all your logging functions here:
-    # LOG_FN_LIST = [GetCpuUsage, GetMemUsage, GetNetworkUsage]  # GetNetworkUsage - still todo
-    LOG_FN_LIST = [GetCpuUsage, GetMemUsage, GetNetworkUsage]
-
     def __init__(self):
         self.pid = os.getpid()
-        self.process = psutil.Process(self.pid)
+        self.start_stop_event = Event()
+        self._profiler = Process(target=run_profiler, args=(self.pid, self.start_stop_event))
+        self._profiler.start()
+
+    def start_log(self):
+        ''' Start all the required logging in separate functions 
+            logging is threaded and triggers the functions at precise intervals
+        '''
+        self.start_stop_event.set()
+
+    def end_log(self):
+        ''' Stop the logging threads '''
+        print("Stopping logger... ", end="")
+        while self.start_stop_event.is_set():
+            # Too fast, logging process has not started yet
+            time.sleep(0.01)
+
+        self.start_stop_event.set()
+        # print("stopping event sent", self.start_stop_event.is_set())
+        self._profiler.join()
+        print("sucessful")
+
+
+def run_profiler(profiling_pid, event: Event):
+    profiler = _Profiler(profiling_pid)
+
+    event.wait()
+    profiler.start_log()
+    event.clear()
+
+    # print("run_profiler started logs", event.is_set())
+    event.wait()
+    # print("run_profiler ending logs")
+    profiler.end_log()
+    # print("run_profiler logs ended")
+    event.clear()
+    # print("run_profiler ends")
+
+
+class _Profiler:
+
+    def __init__(self, profiling_pid):
+        self.process = psutil.Process(profiling_pid)
 
         log_filename = datetime.now().strftime('%Y-%m-%d %H-%M-%S') + ".csv"
         self.log_fp = Path(config.LOG_PATH, log_filename)
@@ -84,9 +127,7 @@ class Profiler:
                             format="%(asctime)s%(msecs)03d,%(message)s", datefmt="%S",
                             force=True)
 
-        logging.debug('starting')
-
-        # TODO: Pass object to another process
+        logging.debug('logger initialised')
 
     def _log_wrapper(self, func, *args, **kwargs):
         def wrap(*args, **kwargs):
@@ -105,7 +146,7 @@ class Profiler:
         '''
         self.threads = []
 
-        for log_fn in self.LOG_FN_LIST:
+        for log_fn in LOG_FN_LIST:
             self.threads.append(self._log_wrapper(log_fn, self.process))
 
         for thr in self.threads:
