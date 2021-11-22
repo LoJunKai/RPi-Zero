@@ -80,10 +80,12 @@ This connects the port from the raspberry pi to the port in the server, to allow
 1. Run `sub_setup.sh` on the RPi first.
 2. Run `pub_setup.sh` on the Laptop next.
 
-### Graph Plotting
+## Graph Plotting
 
 for python script found at:
 `./grpc/plot_metrics.py`
+
+### Setup
 
 need these packages
 ```
@@ -95,11 +97,13 @@ edit filename (.csv)
 ```
 log_filename = "mqtt_1000.csv"`
 ```
+### Running
 
-run 
 ```
 python plot_metrics.py
 ```
+
+#### Note
 
 functions:
 
@@ -107,9 +111,10 @@ functions:
 >-creates a temporary file:  `./grpc/temp.csv`
 >-only need to run 1x 
 >(once reformat function called > overwrites csv previous content)
+![reformatted_log_csv](./images/reformatted_log_csv.png)
 
 `plotAllMetricsGraph(log_fp)`
 `plotCpuGraph(log_fp)`
 `plotMemGraph(log_fp)`
-`plotNetworkIn(log_fp)`
+`plotNetworkIn(log_fp)` (can remove outliers to visualise plots better)
 `plotNetworkOut(log_fp)`
