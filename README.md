@@ -111,7 +111,7 @@ functions:
 >-creates a temporary file:  `./grpc/temp.csv`
 >-only need to run 1x 
 >(once reformat function called > overwrites csv previous content)
-![reformatted_log_csv](./images/reformatted_log_csv.png)
+<img width="657" alt="reformatted_log_csv" src="https://user-images.githubusercontent.com/49429691/142929066-0885b77b-0dd4-41ae-beb4-a545d06c32e3.png">
 
 `plotAllMetricsGraph(log_fp)`
 `plotCpuGraph(log_fp)`
