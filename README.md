@@ -10,7 +10,7 @@
 * [gRPC](./grpc/README.md)
 * [MQTT](/mqtt/README.md)
 * [Hybrid Model](./hybrid/README.md)
-* [Testing Scripts](./testing/)
+* [Testing Scripts](./testing/README.md)
 
 # Set up Raspberry PI
 
