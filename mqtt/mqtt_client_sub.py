@@ -10,7 +10,7 @@ from testing.config import *
 def on_connect(client, userdata, flags, rc):
     print(f"Subscribing to {TEST_TOPIC1}")
     client.connected_flag = True
-    client.subscribe(TEST_TOPIC1)
+    client.subscribe(TEST_TOPIC1,2)
 
 
 def on_message(client, userdata, message):
