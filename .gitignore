@@ -1,3 +1,6 @@
+# For hybrid
+hybrid/storage
+
 # For grpc
 grpc/serverJson
 grpc/clientJson

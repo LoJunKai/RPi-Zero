@@ -1,21 +1,11 @@
-'''
-start sub before pub
-python mqtt_client_sub.py
-'''
-
-# Add import path
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).parents[1]))
-
 import paho.mqtt.client as mqtt
-from testing.config import *
 
+from config import *
 
 def on_connect(client, userdata, flags, rc):
-    print(f"Subscribing to {TEST_TOPIC1}")
+    print(f"Subscribing to {TOPIC}")
     client.connected_flag = True
-    client.subscribe(TEST_TOPIC1,2)
+    client.subscribe(TOPIC)
 
 
 def on_message(client, userdata, message):
@@ -36,7 +26,3 @@ client.connect("localhost")
 
 # loop start
 client.loop_forever()
-
-# time.sleep(10)
-
-# client.loop_stop()

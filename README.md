@@ -1,8 +1,18 @@
-# RPi-Zero
+# 50.012 Networks Project
+## Team 10 - RPi-Zero
+* Yee Yi Xian
+* Lo Jun Kai
+* Priscilla Pearly Tan Pei En
+* Lau Yu Hui
+* Tan Jing Heng Darryl
 
-> 50.012 Networks Project
+# Repository guide
+* [gRPC](./grpc/README.md)
+* [MQTT](/mqtt/README.md)
+* [Hybrid Model](./hybrid/README.md)
+* [Testing Scripts](./testing/README.md)
 
-## Set up Raspberry PI
+# Set up Raspberry PI
 
 1. Install [Raspberry Pi OS lite]((https://www.raspberrypi.com/documentation/computers/getting-started.html)) in RPi.
 2. With the SD card connected, run the [RPi Imager](https://www.raspberrypi.com/software/).
@@ -27,66 +37,3 @@
 https://github.com/LoJunKai/RPi-Zero.git
 pip3 install -r requirements.txt
 ```
-
-## gRPC
-
-After installing all the requirements (I recommend creating virtual environment using venv), you can start using the gRPC packages.
-
-1. cd into the project folder with the '.proto' file. You need to generate the library from the proto file using:
-
-    ```bash
-    python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. ./example.proto
-    ```
-
-2. After the code is generated, you can run:
-
-    ```bash
-    python client.py --name client --times 10
-    ```
-
-3. Do the same for the server (your computer) then run:
-
-    ```bash
-    python server.py --name server
-    ```
-
-You will get the below output from the server and client commad line:  
-![grpc1](./images/grpc1.png)  
-At this point, you might need to connect to the host server (your computer), thus you need to bind the ports remote from the raspberry pi to the server by using:
-
-```bash
-ssh -R 50051:localhost:50051 pi@darryl.local
-```
-
-This connects the port from the raspberry pi to the port in the server, to allow data transfer.  
-**NOTE**: if you are having trouble compiling the proto file, please look at the debugging section for common bugs and how to overcome them.
-
-## Debugging
-
-1. When compiling the proto file, you occur 'cannot import libatomic.so.1', follow this [source](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-on-the-Raspberry-Pi/issues/67):
-![debug1](./images/debug1.jpg)
-
-2. When running the client on RPi, if you run into this error:
-
-    ``` bash
-    File "/home/pi/.local/lib/python3.9/site-packages/grpc/_compression.py", line 15, in <module>
-    from grpc._cython import cygrpc
-    ImportError: /home/pi/.local/lib/python3.9/site-packages/grpc/_cython/cygrpc.cpython-39-arm-linux-gnueabihf.so: undefined symbol: __atomic_exchange_8
-    ```
-
-    Just run the [following](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-on-the-Raspberry-Pi/issues/67): 
-    `export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libatomic.so.1.2.0`
-
-## MQTT
-
-### Setup
-
-1. Run the mosquitto broker on your laptop (follow instructions in `broker_setup.sh`).
-2. Update the `MQTT_BROKER_IP` with the local IP address of your broker.
-
-### Running
-
-> Still a work in progress
-
-1. Run `sub_setup.sh` on the RPi first.
-2. Run `pub_setup.sh` on the Laptop next.
